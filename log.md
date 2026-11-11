@@ -12,7 +12,12 @@ example:
 - adding log guide for better understanding of code changes and updates.
 - track changes made in the code before pushing commits.
 
-----
+---
+
+# beecrowd.py - _Irshad - 11 Nov, 26_
+- Added beecrowd.py file to fetch user data from beecrowd platform.
+
+---
 
 # Mahbub - 11-11-2026
 - Added bs4 and curl-cffi library in requirement.txt
