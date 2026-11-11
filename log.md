@@ -14,3 +14,6 @@ example:
 
 ----
 
+# Mahbub - 11-11-2026
+- Added bs4 and curl-cffi library in requirement.txt
+
