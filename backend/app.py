@@ -307,7 +307,7 @@ def login():
         return error("Wrong email or password", 401)
 
     session.clear()
-    session["user_id"] = user["id"]  # the browser now carries a "logged in" cookie
+    session["user_id"] = user["id"]
     return jsonify(
         {
             "message": "Login successful",
