@@ -19,8 +19,11 @@ example:
 
 ---
 
-# Mahbub - 11-11-2026
+# Mahbub - 11 Nov, 26
 - Added bs4 and curl-cffi library in requirement.txt
 - Updated requirement.txt so that it supports all version of python
 - Added codeforces, leetcode, codechef user static fetcher python function and a test python file
+
+# Mahbub - 12 Nov, 26
+- Added app.py where backend logics are written
 
