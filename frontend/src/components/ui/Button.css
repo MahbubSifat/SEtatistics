@@ -24,3 +24,7 @@
 
 .btn--ghost-light { background: transparent; border-color: rgb(246 242 231 / 0.35); color: var(--forest-ink); }
 .btn--ghost-light:hover:not(:disabled) { background: rgb(246 242 231 / 0.1); }
+
+.btn--danger { background: var(--danger); color: #fff; }
+.btn--danger:hover:not(:disabled) { background: #9a2f26; }
+.btn--sm { min-height: 40px; padding: 0 var(--space-4); }

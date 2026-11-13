@@ -4,6 +4,7 @@ import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
 import LeaderboardPage from './pages/LeaderboardPage'
 import DashboardPage from './pages/DashboardPage'
+import StudentsPage from './pages/StudentsPage'
 
 
 // সাময়িক: পরের steps এ আসল page দিয়ে বদলাব
@@ -23,7 +24,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
          <Route path="/leaderboard" element={<LeaderboardPage />} />
-          <Route path="/students" element={<Stub title="Students" />} />
+         <Route path="/students" element={<StudentsPage />} />
           <Route path="/import" element={<Stub title="Import" />} />
         </Route>
       </Route>

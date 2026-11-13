@@ -1,0 +1,29 @@
+.modal {
+  margin: auto; /* global reset এ margin:0 আছে, তাই মাঝখানে আনতে লাগে */
+  width: min(100% - 2 * var(--gutter), 40rem);
+  max-height: 90vh;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow-pop);
+  overflow: auto;
+}
+.modal::backdrop { background: rgb(15 47 35 / 0.6); backdrop-filter: blur(2px); }
+.modal[open] { animation: rise 0.3s var(--ease); }
+.modal__body { padding: var(--space-8); }
+.modal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 4px double var(--ink);
+}
+.modal__head h2 { font-size: var(--text-2xl); }
+.modal__x { min-width: 44px; min-height: 44px; background: none; border: 0; font-size: 1.75rem; line-height: 1; }
+.modal__actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); }
+.confirm__text { color: var(--ink-soft); }
+@media (max-width: 720px) { .modal__body { padding: var(--space-6) var(--space-4); } }
