@@ -1,4 +1,5 @@
 import Button from '../../components/ui/Button'
+import './leaderboard.css'
 
 const PLATFORMS = [
   { key: 'codeforces', short: 'CF', name: 'Codeforces' },
@@ -93,7 +94,7 @@ export default function LeaderboardTable({ status, rows, error, periodColumn, on
               )
             })}
           </span>
-          <b role="cell" className="lb-period lb-num">{r.period_solved}</b>
+          <b role="cell" className="lb-period lb-num">{r.period_solved ?? r.total_solved}</b>
           <span role="cell" className="lb-total lb-num lb-hide">{r.total_solved}</span>
         </div>
       ))}

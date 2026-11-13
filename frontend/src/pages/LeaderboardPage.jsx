@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState     
+} from 'react'
 import { getLeaderboard } from '../api/leaderboard'
 import PeriodTabs from '../features/leaderboard/PeriodTabs'
 import LeaderboardTable from '../features/leaderboard/LeaderboardTable'
 import { PERIODS } from '../features/leaderboard/periods'
-import './LeaderboardPage.css'
+import '../features/leaderboard/leaderboard.css'
+import { useSync } from '../context/SyncContext'
 
 export default function LeaderboardPage() {
-  const [period, setPeriod] = useState('last-week')
+    const { version } = useSync()
+    const [period, setPeriod] = useState('last-week')
   const [attempt, setAttempt] = useState(0) // "Try again" এর জন্য
   const [state, setState] = useState({ status: 'loading', rows: [], error: '' })
 
@@ -23,7 +26,7 @@ export default function LeaderboardPage() {
     return () => {
       ignore = true
     }
-  }, [period, attempt])
+   }, [period, attempt, version])
 
   const meta = PERIODS.find((p) => p.value === period)
   const allZero =

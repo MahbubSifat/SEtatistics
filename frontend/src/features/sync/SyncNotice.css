@@ -1,0 +1,11 @@
+.sync-notice {
+  padding: var(--space-3) 0;
+  background: #f3e6c4;
+  border-bottom: 1px solid #e2cd94;
+  font-size: var(--text-sm);
+}
+.sync-notice--error { background: #fbeceb; color: var(--danger); border-bottom-color: #e7b9b5; }
+.sync-notice__inner { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); }
+.sync-notice summary { cursor: pointer; font-weight: 600; }
+.sync-notice ul { margin: var(--space-2) 0 0; padding-left: var(--space-6); font-family: var(--font-mono); font-size: var(--text-xs); }
+.sync-notice__close { background: none; border: 0; text-decoration: underline; padding: var(--space-1) var(--space-2); }

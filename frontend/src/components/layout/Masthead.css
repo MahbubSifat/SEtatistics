@@ -28,3 +28,14 @@
   .masthead__nav { order: 3; width: 100%; overflow-x: auto; margin-right: 0; gap: var(--space-4); }
   .masthead__user { display: none; }
 }
+
+.masthead__progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--highlight);
+  transition: width 0.6s var(--ease);
+}
+.sync-btn { min-width: 10rem; }
+

@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useSync } from '../../context/SyncContext'
 import Button from '../ui/Button'
+import SyncButton from '../../features/sync/SyncButton'
 import './Masthead.css'
 
 const links = [
@@ -12,6 +14,8 @@ const links = [
 
 export default function Masthead() {
   const { user, logout } = useAuth()
+  const { running, status } = useSync()
+  const pct = running && status?.total ? Math.round((status.done / status.total) * 100) : 0
 
   return (
     <header className="masthead">
@@ -26,9 +30,22 @@ export default function Masthead() {
         </nav>
         <div className="masthead__actions">
           <span className="masthead__user">{user?.name}</span>
+          <SyncButton />
           <Button variant="ghost-light" onClick={logout}>Logout</Button>
         </div>
       </div>
+
+      {running && (
+        <div
+          className="masthead__progress"
+          role="progressbar"
+          aria-label="Sync progress"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={pct}
+          style={{ width: `${Math.max(pct, 4)}%` }}
+        />
+      )}
     </header>
   )
 }

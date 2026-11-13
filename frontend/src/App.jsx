@@ -3,6 +3,7 @@ import ProtectedRoute from './components/layout/ProtectedRoute'
 import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
 import LeaderboardPage from './pages/LeaderboardPage'
+import DashboardPage from './pages/DashboardPage'
 
 
 // সাময়িক: পরের steps এ আসল page দিয়ে বদলাব
@@ -20,7 +21,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<Stub title="Dashboard" />} />
+          <Route path="/" element={<DashboardPage />} />
          <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/students" element={<Stub title="Students" />} />
           <Route path="/import" element={<Stub title="Import" />} />
