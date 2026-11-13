@@ -1,0 +1,28 @@
+.nf {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 68px);
+  display: grid;
+  align-content: center;
+  padding: var(--space-12) var(--gutter);
+  color: var(--forest-ink);
+  background:
+    radial-gradient(50% 80% at 90% 0%, rgb(217 165 58 / 0.14), transparent 70%),
+    linear-gradient(rgb(246 242 231 / 0.045) 1px, transparent 1px) 0 0 / 72px 72px,
+    linear-gradient(90deg, rgb(246 242 231 / 0.045) 1px, transparent 1px) 0 0 / 72px 72px,
+    var(--forest);
+}
+.nf__num {
+  position: absolute;
+  right: -1rem;
+  bottom: -2rem;
+  font: 700 clamp(12rem, 40vw, 32rem) / 0.8 var(--font-display);
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(217 165 58 / 0.3);
+  pointer-events: none;
+  user-select: none;
+}
+.nf__text { position: relative; display: grid; justify-items: start; gap: var(--space-4); max-width: 36rem; animation: rise 0.8s var(--ease) both; }
+.nf__eyebrow { font: 500 12px var(--font-mono); letter-spacing: 0.16em; color: var(--highlight); }
+.nf__title { font-size: clamp(2.5rem, 7vw, 5rem); letter-spacing: -0.02em; }
+.nf .btn { text-decoration: none; margin-top: var(--space-4); }

@@ -1,22 +1,13 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
-import LeaderboardPage from './pages/LeaderboardPage'
 import DashboardPage from './pages/DashboardPage'
+import LeaderboardPage from './pages/LeaderboardPage'
 import StudentsPage from './pages/StudentsPage'
 import StudentDetailPage from './pages/StudentDetailPage'
 import ImportPage from './pages/ImportPage'
-
-
-// সাময়িক: পরের steps এ আসল page দিয়ে বদলাব
-function Stub({ title }) {
-  return (
-    <main className="container" style={{ paddingBlock: 'var(--space-12)' }}>
-      <h1>{title}</h1>
-    </main>
-  )
-}
+import NotFoundPage from './pages/NotFoundPage'
 
 export default function App() {
   return (
@@ -25,13 +16,13 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
-         <Route path="/leaderboard" element={<LeaderboardPage />} />
-         <Route path="/students" element={<StudentsPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/students" element={<StudentsPage />} />
           <Route path="/students/:id" element={<StudentDetailPage />} />
           <Route path="/import" element={<ImportPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import './LoginPage.css'
+import usePageTitle from '../hooks/usePageTitle'
 
 const PLATFORMS = ['Codeforces', 'LeetCode', 'CodeChef', 'beecrowd']
 const BARS = [92, 78, 64, 51, 38] // শুধু সাজানোর জন্য, আসল data না
@@ -18,6 +19,7 @@ function ArrowIcon() {
 }
 
 export default function LoginPage() {
+  usePageTitle('Sign in')
   const { user, login } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')

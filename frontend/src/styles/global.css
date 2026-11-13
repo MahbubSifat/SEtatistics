@@ -95,3 +95,19 @@ a {
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
 }
+
+/* keyboard user দের জন্য "Skip to content" */
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -4rem;
+  z-index: var(--z-toast);
+  padding: var(--space-3) var(--space-4);
+  background: var(--highlight);
+  color: var(--highlight-ink);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: top var(--dur-fast) var(--ease);
+}
+.skip-link:focus { top: var(--space-4); }
+#content:focus { outline: none; }
