@@ -1,10 +1,13 @@
 import './Input.css'
 
-export default function Input({ label, id, ...rest }) {
+export default function Input({ label, id, variant = 'box', suffix, ...rest }) {
   return (
-    <div className="field">
+    <div className={`field${variant === 'line' ? ' field--line' : ''}`}>
       <label htmlFor={id}>{label}</label>
-      <input id={id} {...rest} />
+      <div className="field__control">
+        <input id={id} {...rest} />
+        {suffix}
+      </div>
     </div>
   )
 }

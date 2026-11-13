@@ -1,6 +1,8 @@
 .field { display: flex; flex-direction: column; gap: var(--space-2); }
 .field label { font-size: var(--text-sm); font-weight: 600; }
+.field__control { position: relative; }
 .field input {
+  width: 100%;
   min-height: 44px;
   padding: 0 var(--space-4);
   background: var(--surface);
@@ -8,3 +10,49 @@
   border-radius: var(--radius-md);
 }
 .field input:focus { border-color: var(--forest); }
+
+/* underline variant (login) */
+.field--line label {
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.field--line input {
+  min-height: 52px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  font-size: var(--text-lg);
+}
+.field--line input:focus { outline: none; }
+.field--line .field__control::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--forest);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.field--line .field__control:focus-within::after { transform: scaleX(1); }
+.field__control:has(.field__toggle) input { padding-right: 4.5rem; }
+.field__toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  background: none;
+  border: 0;
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--forest);
+}

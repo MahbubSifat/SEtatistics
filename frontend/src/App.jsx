@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
+import LeaderboardPage from './pages/LeaderboardPage'
+
 
 // সাময়িক: পরের steps এ আসল page দিয়ে বদলাব
 function Stub({ title }) {
@@ -19,7 +21,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Stub title="Dashboard" />} />
-          <Route path="/leaderboard" element={<Stub title="Leaderboard" />} />
+         <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/students" element={<Stub title="Students" />} />
           <Route path="/import" element={<Stub title="Import" />} />
         </Route>
