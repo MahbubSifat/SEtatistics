@@ -1,0 +1,30 @@
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-masthead);
+  background: var(--forest);
+  color: var(--forest-ink);
+}
+.masthead :focus-visible { outline-color: var(--highlight); }
+.masthead__inner { display: flex; align-items: center; gap: var(--space-8); min-height: 68px; flex-wrap: wrap; }
+.masthead__brand { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); }
+.masthead__nav { display: flex; gap: var(--space-6); margin-right: auto; }
+.masthead__link {
+  color: var(--forest-soft);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent;
+  transition: color var(--dur-fast) var(--ease);
+}
+.masthead__link:hover { color: #fff; }
+.masthead__link.active { color: #fff; border-bottom-color: var(--highlight); }
+.masthead__actions { display: flex; align-items: center; gap: var(--space-4); }
+.masthead__user { font-size: var(--text-sm); color: var(--forest-soft); }
+
+@media (max-width: 720px) {
+  .masthead__inner { gap: var(--space-3); padding-block: var(--space-3); }
+  .masthead__brand { margin-right: auto; }
+  .masthead__nav { order: 3; width: 100%; overflow-x: auto; margin-right: 0; gap: var(--space-4); }
+  .masthead__user { display: none; }
+}

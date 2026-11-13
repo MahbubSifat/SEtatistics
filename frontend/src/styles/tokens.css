@@ -1,0 +1,66 @@
+/* Design tokens: সব রং, font, spacing এক জায়গায়।
+   পরে কিছু বদলাতে হলে শুধু এখানে বদলালেই পুরো app বদলাবে। */
+:root {
+  /* Colors */
+  --paper: #f6f2e7;
+  --surface: #ffffff;
+  --ink: #16150f;
+  --ink-soft: #5e5a4c;
+  --rule: #d8d1be;
+  --forest: #0f2f23;
+  --forest-hover: #174836;
+  --forest-ink: #f6f2e7;
+  --forest-soft: #b9c9bf;
+  --highlight: #d9a53a;
+  --highlight-hover: #e4b44c;
+  --highlight-ink: #16150f;
+  --danger: #b3392f;
+  --success: #2f7d4f;
+  --warning: #9a6a10;
+  
+  /* Fonts */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+
+  /* Type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: clamp(2.25rem, 5vw, 3.5rem);
+  --text-display: clamp(3rem, 9vw, 6.5rem);
+
+  /* Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-18: 4.5rem;
+
+  /* Shape & depth: ছোট radius, কম shadow */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --shadow-sm: 0 1px 0 rgb(28 27 25 / 0.06);
+  --shadow-pop: 0 12px 32px -12px rgb(28 27 25 / 0.28);
+
+  /* Layout */
+  --content-width: 72rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur: 220ms;
+
+  /* Z-index layers */
+  --z-masthead: 50;
+  --z-modal: 100;
+  --z-toast: 200;
+}
