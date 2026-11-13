@@ -1,5 +1,7 @@
 import Button from '../../components/ui/Button'
 import './students.css'
+import { Link } from 'react-router-dom'
+
 
 const ACCOUNTS = [
   { key: 'codeforces_id', short: 'CF', name: 'Codeforces' },
@@ -64,7 +66,7 @@ export default function StudentTable({ status, rows, error, query, onRetry, onEd
           <div className="st-row" role="row" key={s.id} style={{ '--i': Math.min(i, 12) }}>
             <span role="cell" className="st-id num">{s.student_id}</span>
             <span role="cell" className="st-name">
-              {s.name}
+              <Link to={`/students/${s.id}`} className="row-link">{s.name}</Link>
               <small>{s.email}</small>
               <small className="st-meta">{s.student_id} · Batch {s.batch}</small>
             </span>

@@ -1,5 +1,6 @@
 import Button from '../../components/ui/Button'
 import './leaderboard.css'
+import { Link } from 'react-router-dom'
 
 const PLATFORMS = [
   { key: 'codeforces', short: 'CF', name: 'Codeforces' },
@@ -70,7 +71,7 @@ export default function LeaderboardTable({ status, rows, error, periodColumn, on
             <b className={`lb-rank ${rankClass(r.rank)}`}>{r.rank}</b>
           </span>
           <span role="cell" className="lb-name">
-            {r.name}
+            <Link to={`/students/${r.id}`} className="row-link">{r.name}</Link>
             <small>{r.student_id} · Batch {r.batch}</small>
           </span>
           <span role="cell" className="lb-chips lb-hide">

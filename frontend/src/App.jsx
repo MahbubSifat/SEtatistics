@@ -5,6 +5,8 @@ import LoginPage from './pages/LoginPage'
 import LeaderboardPage from './pages/LeaderboardPage'
 import DashboardPage from './pages/DashboardPage'
 import StudentsPage from './pages/StudentsPage'
+import StudentDetailPage from './pages/StudentDetailPage'
+import ImportPage from './pages/ImportPage'
 
 
 // সাময়িক: পরের steps এ আসল page দিয়ে বদলাব
@@ -25,7 +27,8 @@ export default function App() {
           <Route path="/" element={<DashboardPage />} />
          <Route path="/leaderboard" element={<LeaderboardPage />} />
          <Route path="/students" element={<StudentsPage />} />
-          <Route path="/import" element={<Stub title="Import" />} />
+          <Route path="/students/:id" element={<StudentDetailPage />} />
+          <Route path="/import" element={<ImportPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
