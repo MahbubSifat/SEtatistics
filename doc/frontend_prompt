@@ -1,0 +1,108 @@
+# Frontend Build Prompt – CP Student Tracker (Department of Software Engineering, UFTB)
+
+> এই পুরো লেখাটা Claude / Lovable / v0 / Cursor এ prompt হিসেবে paste করা যাবে, অথবা frontend developer কে brief হিসেবে দেওয়া যাবে। সাথে `API_DOCUMENTATION.md` আর leaderboard এর sketch টাও দিন।
+
+---
+
+## Role & goal
+
+Build the frontend for a competitive-programming leaderboard for the **Department of Software Engineering, UFTB**. It tracks ~300 students across Codeforces, LeetCode, CodeChef and Beecrowd. Everyone can see the leaderboard and student profiles without logging in. Only two kinds of accounts can log in: **admin** and **developer**. Both can change data (students, Excel import, sync) and edit their own profile; only the admin manages login accounts and sees everyone's activity log. Edit controls must never be shown to public visitors. The backend (Flask) is finished and documented in `API_DOCUMENTATION.md` — follow it exactly, do not invent endpoints or fields.
+
+## Tech stack
+
+- **React 18 + Vite + TypeScript**
+- **Tailwind CSS** (design tokens below as CSS variables, Tailwind theme extends them)
+- **TanStack Query** for all server data (cache key = endpoint + query params; `staleTime` 60 s for public data)
+- **React Router** — routes: `/` leaderboard, `/students/:id` profile, `/login`, `/staff` (students), `/staff/import`, `/staff/logs`, `/staff/settings` (own account + password), `/staff/my-profile` (own leaderboard profile), `/staff/accounts` (admin only)
+- **Recharts** for graphs
+- **lucide-react** for icons
+- One `api()` helper exactly like section ১৫ of the docs (`credentials: "include"`, throws `Error` with `status` and `errors`)
+- Base URL from `VITE_API_URL`
+- Put TypeScript types for every response in `src/types/api.ts`, copied from the docs (LeaderboardRow, PlatformStats, Growth, ProfileResponse, HistoryResponse, SyncStatus, LogItem…)
+
+## Visual style
+
+**Clean, professional, data-dense.** Think a well-made sports standings table or GitHub's UI: calm neutrals, one accent, small type so a lot fits on screen. No gradients, no glassmorphism, no big hero sections, no emoji.
+
+**Typography**
+- UI font: Inter (fallback system-ui). Numbers: `font-variant-numeric: tabular-nums` everywhere so columns line up.
+- Table body **13px**, secondary text (batch, usernames, timestamps) **12px**, table header **11px uppercase, letter-spacing 0.04em, medium weight**, page title 18px semibold. Line-height 1.35.
+- Row height **40px** (avatar 28px). Cell padding 8px × 10px. Goal: ~15–18 rows visible on a 1080p screen.
+
+**Colors (light theme; dark theme optional using the same tokens)**
+- Background `#F8FAFC`, surface `#FFFFFF`, border `#E2E8F0`, text `#0F172A`, muted `#64748B`
+- Accent (links, active tab, focus ring): `#2563EB`
+- Header bar: soft yellow `#FEF3C7` with a 1px `#FCD34D` bottom border (keeps the sketch's yellow banner, but subtle)
+- Medal: gold `#D4A017`, silver `#9CA3AF`, bronze `#B87333`
+- Platform-leader highlight: background `#ECFDF5`, text `#047857`, font-weight 600
+- Growth: up `#16A34A`, down `#DC2626`, zero `#94A3B8`
+- Platform colors (graphs/chips only): Codeforces `#1F8ACB`, LeetCode `#FFA116`, CodeChef `#5B4638`, Beecrowd `#7C3AED`
+- Radius: 8px cards, 6px controls. Shadows: none or `0 1px 2px rgb(0 0 0 / 0.04)`.
+
+## Page 1 — Leaderboard (`/`)
+
+**Header bar (full width):** `</>` logo mark on the left, "Department of Software Engineering, UFTB" title, right side: small "Updated 3h ago" from `last_sync.platforms_synced_at` (tooltip shows both platform and beecrowd times) and a "Staff login" link (or the staff name + menu when logged in).
+
+**Controls row (above the table, one line on desktop):**
+- Left: segmented control for period — `This Day | Last 3 Days | Last Week | Last Month | All Time` → `period` = `this-day | last-3-days | last-week | last-month | all-time`. Default `last-week`. Show the date next to This Day from `as_of_day` ("This Day · 16 Nov") — it is the day of the last nightly sync, not necessarily today.
+- Middle: Batch dropdown and Department dropdown (options from `/api/dashboard/summary` → `batches`, `departments`), search input (debounced 250 ms → `search`).
+- Right: segmented toggle `Solved | Rank` → `sort=solved` or `sort=rating`. When Rank is active show a small select `All platforms | Codeforces | LeetCode | CodeChef | Beecrowd` (`platform=all` default = total solved on all platforms, all-time; a platform = that platform's rating).
+- Keep all control state in the URL query string so links are shareable and the back button works.
+
+**Table columns (same order as the sketch):**
+
+| Column | Content |
+| --- | --- |
+| Standing | Rank number (bold, 13px, fixed width) + 28px round avatar. Rank 1/2/3 (`medal`): 2px ring in the medal color + tiny laurel/medal icon at the bottom-right of the avatar. Never rely on color alone — the rank number is always visible. |
+| Name | Name (13px, medium) + `special_role` badge: if `developer`, a small `Code2` lucide icon in accent color with tooltip "Developer"; other roles as a tiny outlined tag. Second line 12px muted: `student_id · Batch 10`. |
+| Codeforces / LeetCode / Beecrowd / CodeChef | `platforms[p].solved[period]` (big number). Under it 11px muted: rating (`1450`) or the all-time total when sorting by solved. `—` when `username` is null. Small ⚠ icon with tooltip when `error` is set. If `p` is in `top_in`: platform-leader highlight + a tiny crown icon. Clicking the header sets `sort=<platform>`. |
+| Last Week | `solved["last-week"]` (always last week, regardless of the selected period) |
+| Growth | `growth[period].change` with ▲/▼ and `percent`% in green/red; "new" when `percent` is null and change > 0; "—" for all-time. |
+
+- Header row sticky. The column currently used for sorting gets the accent underline and a sort arrow.
+- Row hover `#F1F5F9`; whole row is clickable → `/students/:id?period=…&sort=…` (pass the current filters so the profile's rank matches).
+- Rows 1–3 get a very faint tint of their medal color (≈4% opacity), nothing louder.
+- 300 rows: render all with simple windowing (`@tanstack/react-virtual`) or plain rendering — it is fast enough; no pagination needed. Show "Showing 23 of 300" when searching (`matched` / `out_of`).
+- Loading: 10 skeleton rows. Empty: "No students match these filters". Error: inline message with Retry.
+- Mobile: table scrolls horizontally, Standing + Name columns stay sticky on the left; controls wrap into two lines.
+
+## Page 2 — Student profile (`/students/:id`)
+
+Fetch `/api/students/:id/profile` and `/api/students/:id/history?days=30` in parallel with the same `period`/`sort` as the leaderboard.
+
+**Top card (left-aligned, compact):**
+- Avatar 96px. Medal (`standing.medal`) as a ring + badge on the avatar for ranks 1–3. If `special_role === "developer"`, a small round `</>` badge on the avatar's top-right corner.
+- Name 20px semibold, to its **right** the position pill: `#4 / 300` (`standing.rank / standing.out_of`), with a small caption of the period ("All Time · Solved"). Below: `student_id · Department · Batch`.
+- Row of social links under the name: GitHub, LinkedIn, then one chip per platform account (logo-colored dot + username, links to `platforms[p].url`). Hide missing ones.
+- Right side of the card: 4 small stat tiles — Today, Last 3 Days, Last Week, Last Month (from `student.solved`) each with the growth arrow, and All Time as the larger tile.
+
+**Details table:** rows = platforms, columns = This Day / Last 3 Days / Last Week / Last Month / All Time / Rating / Rank / Last synced. Platform-leader cells (`top_in`) highlighted the same way as the leaderboard.
+
+**Graphs:**
+- Above the graphs: platform chips `All | Codeforces | LeetCode | CodeChef | Beecrowd` (single-select; "All" uses `series.all`, otherwise `series[platform]`), range chips `7d | 30d | 90d` (refetch `days`), and a metric toggle `Solved per day | Total solved | Rating` (bar for daily, line for total and rating; Rating is disabled on "All").
+- Two cards side by side (stack on mobile), **same y-axis scale** so they are comparable:
+  1. **"<Name>'s performance"** — full color, 2px line / solid bars. This is the focus.
+  2. **"#1 · <Leader name>"** — the leader's series rendered dimmed: 40% opacity, greyed version of the platform color, dashed line. Title in muted text.
+- Also overlay the leader's line on the student's chart as a faint dashed grey line so the gap is visible in one glance (legend: "You" vs "#1").
+- If `is_leader` / `leader_is_self` is true: hide the second card and show a gold "You're #1" badge instead.
+- `null` values in `total` mean "not tracked yet" — leave gaps, don't plot zeros. Tooltip shows the date and value for both students.
+
+## Staff area (behind login)
+
+- **Login page:** email + password, show `data.error`; on 429 show the "too many attempts" message. On app start call `/api/auth/me` to restore the session (`user.role`, `student`); any 401 from a staff call → redirect to `/login`, any 403 → toast "Only an admin can do this". Hide admin-only navigation for developers.
+- **My profile (`/staff/my-profile`):** if `student` from `/api/auth/me` is null show an empty state "You're not on the leaderboard" with a "Create my profile" form (student_id, name, department, batch required); otherwise an edit form for photo, GitHub, LinkedIn and the four platform usernames → `PUT /api/auth/me/profile`. A danger-zone button "Remove me from the leaderboard" → `DELETE /api/auth/me/profile`. On the public profile page, when the logged-in user's `student_pk` equals the profile id, show an "Edit profile" button linking here.
+- **Accounts (`/staff/accounts`, admin only):** table of accounts (name, email, role badge, linked student, last login); create account dialog (role admin/developer, optional linked student picked from a searchable student list), change role, link/unlink student, reset password, delete (not yourself).
+- **Students (`/staff`):** dense table with search/batch/department filters, Add / Edit drawer (form fields exactly as the docs, inline validation from `errors`), Delete with confirm dialog. Warn in the edit form that changing a platform username deletes that platform's history.
+- **Excel import (`/staff/import`):** 3-step wizard — (1) download template + choose file + mode `Add new only` / `Add & update existing` (`create`/`upsert`); (2) preview table: errors rows red with the messages, update rows tagged "update", counts at the top, `ignored_columns` notice; (3) Confirm → show imported / updated / skipped.
+- **Sync:** button in the staff header. While running: disabled + progress bar `done/total` polled every 2 s; afterwards a dismissible panel listing `failed`. In queue mode show "Queued — runs with the next scheduled sync". Show both last-sync times (platforms / beecrowd).
+- **Activity logs (`/staff/logs`):** (admin sees everyone, developer only own — the API already filters) table (time, staff, action, summary) with filters: staff (from `/api/users`), action group (auth / student / excel / sync / beecrowd), date range; expandable row shows `details` (for `student.update` render the `changes` as "field: old → new"). Paginate with `limit`/`offset`.
+- **Settings (`/staff/settings`):** change own name, change password form (current, new, confirm — confirm checked client-side, min 6 chars), add staff account.
+
+## Quality bar
+
+- Every number uses `tabular-nums` and `toLocaleString()`.
+- Avatars: `loading="lazy"`, `referrerPolicy="no-referrer"`, fallback to initials on error.
+- External links open in a new tab with `rel="noopener noreferrer"`.
+- Keyboard: tabs/toggles are real buttons, rows reachable with Tab + Enter, visible focus ring.
+- No layout shift when switching period: keep column widths fixed.
+- Keep components small: `LeaderboardTable`, `StandingCell`, `PlatformCell`, `GrowthCell`, `PeriodTabs`, `ProfileHeader`, `PerformanceChart`, `ImportWizard`, `SyncButton`, `LogsTable`.
