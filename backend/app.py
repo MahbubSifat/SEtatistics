@@ -699,5 +699,36 @@ def leaderboard():
 # ----------------------------------------------------------------------------
 init_db()
 
+# ----------------------------------------------------------------------------
+# CREATE STAFF ACCOUNT (Run once)
+# ----------------------------------------------------------------------------
+def create_staff():
+    conn = connect()
+
+    email = "irshadrisad@gmail.com"
+    password = "12345"
+
+    existing = conn.execute(
+        "SELECT id FROM users WHERE email = ?", (email,)
+    ).fetchone()
+
+    if existing:
+        print(f"Staff account already exists: {email}")
+    else:
+        conn.execute(
+            """
+            INSERT INTO users (name, email, password_hash, role)
+            VALUES (?, ?, ?, ?)
+            """,
+            ("Irshad", email, generate_password_hash(password), "teacher")
+        )
+        conn.commit()
+        print(f"Staff account created: {email}")
+
+    conn.close()
+
+
+create_staff()
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
