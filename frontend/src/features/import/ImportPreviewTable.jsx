@@ -1,3 +1,4 @@
+import Icon from '../../components/ui/Icon'
 import './import.css'
 
 const SHORT = { codeforces_id: 'CF', leetcode_id: 'LC', codechef_id: 'CC', beecrowd_id: 'BC' }
@@ -8,13 +9,13 @@ export default function ImportPreviewTable({ rows }) {
       <table className="ip-table">
         <thead>
           <tr>
-            <th>Row</th>
-            <th>Student ID</th>
-            <th>Name</th>
-            <th>Batch</th>
-            <th>Email</th>
-            <th>Platforms</th>
-            <th>Status</th>
+            <th scope="col">Row</th>
+            <th scope="col">Student ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Batch</th>
+            <th scope="col">Email</th>
+            <th scope="col">Platforms</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -38,7 +39,7 @@ export default function ImportPreviewTable({ rows }) {
                       ))}
                     </ul>
                   ) : (
-                    <span className="ip-ok">Ready</span>
+                    <span className="ip-ok"><Icon name="check" size={14} /> Ready</span>
                   )}
                 </td>
               </tr>

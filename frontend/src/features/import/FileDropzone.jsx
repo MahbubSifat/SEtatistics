@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Button from '../../components/ui/Button'
+import Icon from '../../components/ui/Icon'
 import './import.css'
 
 export default function FileDropzone({ onFile, disabled }) {
@@ -20,6 +21,7 @@ export default function FileDropzone({ onFile, disabled }) {
         if (!disabled && e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0])
       }}
     >
+      <span className="dz__icon" aria-hidden="true"><Icon name="upload" size={24} /></span>
       <p className="dz__title">Drop your Excel file here</p>
       <p className="dz__hint">.xlsx only · the first row must be the column names</p>
       <Button onClick={() => inputRef.current.click()} disabled={disabled}>Choose file</Button>

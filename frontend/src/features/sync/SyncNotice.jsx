@@ -12,7 +12,7 @@ export default function SyncNotice() {
   if (error) {
     return (
       <div className="sync-notice sync-notice--error" role="alert">
-        <div className="container">{error}</div>
+        <div className="container container--wide">{error}</div>
       </div>
     )
   }
@@ -21,7 +21,7 @@ export default function SyncNotice() {
 
   return (
     <div className="sync-notice" role="status">
-      <div className="container sync-notice__inner">
+      <div className="container container--wide sync-notice__inner">
         <details>
           <summary>
             Sync finished, {failed.length} {failed.length === 1 ? 'account' : 'accounts'} could not be fetched
