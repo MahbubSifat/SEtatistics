@@ -1,0 +1,49 @@
+import { PERIODS } from '../leaderboard/periods'
+
+// 1st, 2nd, 3rd, 4th ... 11th, 12th, 13th ... 21st
+export function ordinalParts(n) {
+  const v = n % 100
+  if (v >= 11 && v <= 13) return [n, 'th']
+  return [n, { 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] ?? 'th']
+}
+export const ordinal = (n) => ordinalParts(n).join('')
+
+export const medalOf = (rank) => ({ 1: 'gold', 2: 'silver', 3: 'bronze' })[rank] ?? null
+
+// field = student এর username এর field, url = profile লিংক
+export const PLATFORMS = [
+  { key: 'codeforces', field: 'codeforces_id', name: 'CodeForces', short: 'CF', url: (u) => `https://codeforces.com/profile/${encodeURIComponent(u)}` },
+  { key: 'leetcode', field: 'leetcode_id', name: 'LeetCode', short: 'LC', url: (u) => `https://leetcode.com/u/${encodeURIComponent(u)}/` },
+  { key: 'codechef', field: 'codechef_id', name: 'CodeChef', short: 'CC', url: (u) => `https://www.codechef.com/users/${encodeURIComponent(u)}` },
+  { key: 'beecrowd', field: 'beecrowd_id', name: 'Beecrowd', short: 'BC', unsynced: true, url: (u) => `https://judge.beecrowd.com/en/profile/${encodeURIComponent(u)}` },
+]
+
+// একটা platform এ সবার মধ্যে এই ছাত্রের অবস্থান
+export function platformRank(rows, id, key) {
+  const mine = rows.find((r) => r.id === id)?.by_platform?.[key] ?? 0
+  return 1 + rows.filter((r) => (r.by_platform?.[key] ?? 0) > mine).length
+}
+
+export function platformBest(rows, key) {
+  return Math.max(0, ...rows.map((r) => r.by_platform?.[key] ?? 0))
+}
+
+// প্রতিটা period এ: ছাত্র বনাম leader (ছাত্র নিজেই ১ নম্বর হলে ২ নম্বর)
+export function buildComparison(id, boards) {
+  return PERIODS.map((p) => {
+    const rows = boards?.[p.value] ?? []
+    const me = rows.find((r) => r.id === id)
+    if (!me) return null
+    const other = rows.find((r) => r.id !== id) ?? null
+    return {
+      key: p.value,
+      label: p.column,
+      total: rows.length,
+      you: me.period_solved,
+      youRank: me.rank,
+      top: other ? other.period_solved : null,
+      topRank: other ? other.rank : null,
+      topName: other ? other.name : null,
+    }
+  }).filter(Boolean)
+}

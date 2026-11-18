@@ -75,6 +75,9 @@ const PATHS = {
   'chevron-left': <path d="m15 6-6 6 6 6" />,
   'chevron-right': <path d="m9 6 6 6-6 6" />,
   'trend-up': <path d="M3 17l6-6 4 4 8-8M15 7h6v6" />,
+    external: <path d="M7 17 17 7M8 7h9v9" />,
+  'arrow-left': <path d="M19 12H5M11 6l-6 6 6 6" />,
+  
   alert: (
     <>
       <circle cx="12" cy="12" r="9" />

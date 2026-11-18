@@ -1,24 +1,41 @@
 .toast {
   position: fixed;
-  left: 50%;
-  bottom: var(--space-8);
+  inset-inline: 0;
+  margin-inline: auto; /* আড়াআড়ি মাঝখানে, চওড়া হওয়ার জায়গা পুরো screen */
+  bottom: calc(var(--space-8) + 3.5rem + env(safe-area-inset-bottom, 0px)); /* footer এর উপরে */
   z-index: var(--z-toast);
+  width: fit-content;
+  max-width: min(32rem, calc(100% - 2 * var(--gutter)));
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  max-width: min(32rem, calc(100% - 2 * var(--gutter)));
   padding: var(--space-3) var(--space-6);
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
   font-size: var(--text-sm);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
   box-shadow: var(--shadow-lg);
+  pointer-events: none; /* নিচের footer/বাটনে click আটকাবে না */
   animation: toast-in 0.3s var(--ease) both;
 }
-.toast::before { content: ''; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-fill); box-shadow: 0 0 0 3px var(--accent-soft); }
-.toast--error::before { background: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
+.toast::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.toast--error::before {
+  background: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
 @keyframes toast-in {
-  from { opacity: 0; transform: translate(-50%, 12px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }
