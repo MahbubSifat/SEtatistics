@@ -1,0 +1,5 @@
+.pager { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); margin-top: var(--space-4); }
+.pager__info { margin: 0; font-size: 12px; color: var(--muted); }
+.pager__ctrl { display: flex; align-items: center; gap: var(--space-3); }
+.pager__page { font-size: 12px; color: var(--text-2); }
+@media (max-width: 520px) { .pager__info { display: none; } .pager { justify-content: center; } }

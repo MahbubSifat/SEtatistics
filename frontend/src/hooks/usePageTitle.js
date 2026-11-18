@@ -2,6 +2,6 @@ import { useEffect } from 'react'
 
 export default function usePageTitle(title) {
   useEffect(() => {
-    document.title = title ? `${title} · CP Tracker` : 'CP Tracker'
+    document.title = title ? `${title} · SEtatistics` : 'SEtatistics'
   }, [title])
 }

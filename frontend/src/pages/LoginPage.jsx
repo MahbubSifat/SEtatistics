@@ -1,22 +1,16 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import usePageTitle from '../hooks/usePageTitle'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
+import Icon from '../components/ui/Icon'
+import Logo from '../components/ui/Logo'
+import ThemeToggle from '../components/ui/ThemeToggle'
 import './LoginPage.css'
-import usePageTitle from '../hooks/usePageTitle'
 
 const PLATFORMS = ['Codeforces', 'LeetCode', 'CodeChef', 'beecrowd']
-const BARS = [92, 78, 64, 51, 38] // শুধু সাজানোর জন্য, আসল data না
-
-function ArrowIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M5 12h14M13 6l6 6-6 6" />
-    </svg>
-  )
-}
+const BARS = [24, 21, 19, 15, 11] // শুধু সাজানোর জন্য, আসল data না
 
 export default function LoginPage() {
   usePageTitle('Sign in')
@@ -45,66 +39,89 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="login">
-      <section className="stage">
-        <div className="stage__numeral" aria-hidden="true">01</div>
+    <main className="auth">
+      <div className="auth__glow" aria-hidden="true" />
 
-        <header className="stage__top">
-          <span className="stage__brand">CP Tracker</span>
-          <span className="stage__dept">Dept. of Software Engineering · UFTB</span>
+      <section className="auth__stage">
+        <header className="auth__top">
+          <Logo />
+          <ThemeToggle />
         </header>
 
-        <div className="stage__hero">
-          <p className="stage__eyebrow">Competitive Programming · Leaderboard</p>
-          <h1 className="stage__title">
-            Solve.<br />Rank.<br /><em>Repeat.</em>
+        <div className="auth__hero">
+          <p className="auth__eyebrow">
+            <span className="auth__pulse" aria-hidden="true" />
+            Competitive programming tracker
+          </p>
+          <h1 className="auth__title">
+            Solve.<br />Rank.<br /><span>Repeat.</span>
           </h1>
+          <p className="auth__lead">
+            One place to follow your department’s progress on Codeforces, LeetCode, CodeChef and beecrowd.
+          </p>
+          <ul className="auth__platforms" aria-label="Supported platforms">
+            {PLATFORMS.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
         </div>
 
-        <ol className="stage__bars" aria-hidden="true">
-          {BARS.map((w, i) => (
-            <li key={i} style={{ '--w': `${w}%`, '--i': i }}>
-              <span className="stage__bar-rank">0{i + 1}</span>
-              <span className="stage__bar-track"><span className="stage__bar-fill" /></span>
-            </li>
-          ))}
-        </ol>
-
-        <div className="stage__ticker" aria-hidden="true">
-          <div className="stage__ticker-track">
-            {[0, 1].map((n) => (
-              <span key={n}>
-                {PLATFORMS.map((p) => <b key={p}>{p}</b>)}
-              </span>
-            ))}
+        <div className="auth__board" aria-hidden="true">
+          <div className="auth__board-head">
+            <span>Leaderboard</span>
+            <span>This week</span>
           </div>
+          {BARS.map((v, i) => (
+            <div key={v} className="auth__row" style={{ '--w': `${v * 4}%`, '--i': i }}>
+              <span className="auth__rank">0{i + 1}</span>
+              <span className="auth__track"><span className="auth__fill" /></span>
+              <span className="auth__val">{v}</span>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section className="sheet">
-        <form className="sheet__form" onSubmit={handleSubmit}>
-          <p className="sheet__eyebrow">Staff access</p>
-          <h2 className="sheet__title">Welcome back</h2>
-          <p className="sheet__hint">Sign in to manage students and follow their progress.</p>
+      <section className="auth__panel">
+        <form className="auth__card" onSubmit={handleSubmit}>
+          <div className="auth__card-head">
+            <h2>Welcome back</h2>
+            <p>Sign in to manage students and follow their progress.</p>
+          </div>
 
-          {error && <p className="sheet__error" role="alert">{error}</p>}
+          {error && (
+            <p className="auth__error" role="alert">
+              <Icon name="alert" size={18} />
+              <span>{error}</span>
+            </p>
+          )}
 
-          <Input variant="line" id="email" label="Email" type="email" required autoComplete="username"
-                 value={email} onChange={(e) => setEmail(e.target.value)} />
-          <Input variant="line" id="password" label="Password" required autoComplete="current-password"
-                 type={showPw ? 'text' : 'password'}
-                 value={password} onChange={(e) => setPassword(e.target.value)}
-                 suffix={
-                   <button type="button" className="field__toggle" aria-pressed={showPw}
-                           onClick={() => setShowPw((v) => !v)}>
-                     {showPw ? 'Hide' : 'Show'}
-                   </button>
-                 } />
+          <Input
+            id="email" label="Email" type="email" icon="mail" required
+            autoComplete="username" placeholder="Enter your email"
+            value={email} onChange={(e) => setEmail(e.target.value)}
+          />
+          <Input
+            id="password" label="Password" icon="lock" required
+            autoComplete="current-password" placeholder="Enter your password"
+            type={showPw ? 'text' : 'password'}
+            value={password} onChange={(e) => setPassword(e.target.value)}
+            suffix={
+              <button
+                type="button" className="field__toggle"
+                aria-label={showPw ? 'Hide password' : 'Show password'} aria-pressed={showPw}
+                onClick={() => setShowPw((v) => !v)}
+              >
+                <Icon name={showPw ? 'eye-off' : 'eye'} size={18} />
+              </button>
+            }
+          />
 
-          <Button type="submit" loading={loading} className="sheet__submit">
-            Sign in <ArrowIcon />
+          <Button type="submit" loading={loading} className="auth__submit">
+            Sign in <Icon name="arrow-right" size={18} />
           </Button>
         </form>
+
+        <p className="auth__foot">Dept. of Software Engineering · UFTB</p>
       </section>
     </main>
   )

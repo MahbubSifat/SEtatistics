@@ -1,0 +1,32 @@
+.sa { position: relative; display: inline-grid; place-items: center; flex: none; width: var(--sa); height: var(--sa); }
+.sa__circle {
+  display: grid;
+  place-items: center;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-strong);
+  font: 600 calc(var(--sa) * 0.27) var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--text-2);
+}
+.sa--gold .sa__circle, .sa--silver .sa__circle, .sa--bronze .sa__circle { width: 70%; height: 70%; }
+.sa--gold .sa__circle { border-color: #d9a21b; box-shadow: 0 0 20px rgb(224 170 40 / 0.35); }
+.sa--silver .sa__circle { border-color: #9aa1ad; box-shadow: 0 0 18px rgb(154 161 173 / 0.3); }
+.sa--bronze .sa__circle { border-color: #b36a2e; box-shadow: 0 0 18px rgb(179 106 46 / 0.3); }
+.sa__wreath { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 2px 5px rgb(0 0 0 / 0.25)); }
+.sa__dev {
+  position: absolute;
+  right: -4%;
+  bottom: -4%;
+  display: grid;
+  place-items: center;
+  width: 38%;
+  height: 38%;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 2px solid var(--surface);
+}
+.sa__dev svg { width: 62%; height: 62%; }

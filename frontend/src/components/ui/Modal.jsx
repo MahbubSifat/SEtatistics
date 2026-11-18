@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import Icon from './Icon'
 import './Modal.css'
 
 export default function Modal({ open, title, onClose, children }) {
@@ -24,7 +25,9 @@ export default function Modal({ open, title, onClose, children }) {
         <div className="modal__body">
           <header className="modal__head">
             <h2>{title}</h2>
-            <button type="button" className="modal__x" aria-label="Close" onClick={onClose}>×</button>
+            <button type="button" className="modal__x" aria-label="Close" onClick={onClose}>
+              <Icon name="x" size={18} />
+            </button>
           </header>
           {children}
         </div>

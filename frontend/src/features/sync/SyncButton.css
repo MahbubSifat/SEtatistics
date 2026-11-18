@@ -1,0 +1,7 @@
+.sync-btn { min-height: 40px; padding: 0 var(--space-4); }
+.sync-btn.is-busy:disabled { opacity: 1; }
+.spin { animation: spin 0.8s linear infinite; }
+@media (max-width: 640px) {
+  .sync-btn:not(.is-busy) { width: 40px; padding: 0; }
+  .sync-btn:not(.is-busy) .sync-btn__label { display: none; }
+}

@@ -3,11 +3,12 @@ import ProtectedRoute from './components/layout/ProtectedRoute'
 import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
-import LeaderboardPage from './pages/LeaderboardPage'
 import StudentsPage from './pages/StudentsPage'
 import StudentDetailPage from './pages/StudentDetailPage'
 import ImportPage from './pages/ImportPage'
 import NotFoundPage from './pages/NotFoundPage'
+import { Navigate, Route, Routes } from 'react-router-dom'
+
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/leaderboard" element={<Navigate to="/" replace />} />
           <Route path="/students" element={<StudentsPage />} />
           <Route path="/students/:id" element={<StudentDetailPage />} />
           <Route path="/import" element={<ImportPage />} />

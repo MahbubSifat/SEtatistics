@@ -1,0 +1,15 @@
+.seg { display: inline-flex; max-width: 100%; overflow-x: auto; padding: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); }
+.seg__btn {
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.seg__btn:hover { color: var(--text); background: var(--bg-sunken); }
+.seg__btn.is-active { background: var(--btn-bg); color: var(--btn-fg); }

@@ -11,7 +11,14 @@ export default function Button({
 }) {
   return (
     <button type={type} className={`btn btn--${variant} ${className}`} disabled={disabled || loading} {...rest}>
-      {loading ? 'Please wait…' : children}
+      {loading ? (
+        <>
+          <span className="btn__spinner" aria-hidden="true" />
+          Please wait…
+        </>
+      ) : (
+        children
+      )}
     </button>
   )
 }

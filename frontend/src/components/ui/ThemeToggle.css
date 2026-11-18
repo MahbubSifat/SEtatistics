@@ -1,0 +1,28 @@
+.theme-toggle {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 76px;
+  height: 40px;
+  padding: 0 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  color: var(--muted);
+}
+.theme-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-fill);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur) var(--ease);
+}
+.theme-toggle[aria-checked='true'] .theme-toggle__thumb { transform: translateX(33px); }
+.theme-toggle__icon { position: relative; display: grid; place-items: center; height: 100%; transition: color var(--dur-fast) var(--ease); }
+.theme-toggle[aria-checked='false'] .theme-toggle__icon--sun,
+.theme-toggle[aria-checked='true'] .theme-toggle__icon--moon { color: var(--on-accent); }
