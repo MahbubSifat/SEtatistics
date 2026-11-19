@@ -105,6 +105,7 @@ export default function StandingsTable({ status, rows, error, period, periodColu
         <tbody>
           {rows.map((r, i) => (
             <tr key={r.id} className={`dt__row${r.rank <= 3 ? ` is-top is-top-${r.rank}` : ''}`} style={{ '--i': i }}>
+              <td className="dt__stand">
                 <span className="dt__rank num">{String(r.rank).padStart(2, '0')}</span>
                 <StudentAvatar name={r.name} rank={r.rank} developer={isDeveloper(r.student_id)} size={46} />
               </td>

@@ -7,7 +7,7 @@ import { developerOf } from '../../config/team'
 const isHttp = (u) => /^https?:\/\//i.test(u || '')
 
 export default function ProfileHeader({ info, student, rank, total }) {
-    const devInfo = developerOf(info.student_id)
+  const devInfo = developerOf(info.student_id)
   const dev = devInfo !== null
   const medal = medalOf(rank)
 
@@ -22,7 +22,6 @@ export default function ProfileHeader({ info, student, rank, total }) {
   const extraLinks = [
     { key: 'linkedin', tag: 'IN', text: 'LinkedIn', url: student?.linkedin_url || devInfo?.linkedin, label: 'LinkedIn profile' },
     { key: 'github', tag: 'GH', text: 'GitHub', url: student?.github_url, label: 'GitHub profile' },
-    { key: 'linkedin', tag: 'IN', text: 'LinkedIn', url: student?.linkedin_url, label: 'LinkedIn profile' },
   ].filter((l) => isHttp(l.url))
   const links = [...extraLinks, ...platformLinks]
 
@@ -37,13 +36,11 @@ export default function ProfileHeader({ info, student, rank, total }) {
         <div className="sp-title">
           <h1>{info.name}</h1>
           {dev && (
-                      {dev && (
             <span className="sp-dev">
               <DevBadge size={22} />
               Developer
               <span className="sp-dev__role">· {devInfo.role}</span>
             </span>
-          )}
           )}
         </div>
         <p className="sp-dept">Department of Software Engineering</p>
