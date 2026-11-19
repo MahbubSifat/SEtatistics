@@ -1,4 +1,6 @@
 .sa { position: relative; display: inline-grid; place-items: center; flex: none; width: var(--sa); height: var(--sa); }
+
+/* সাধারণ (৪+ নম্বর) */
 .sa__circle {
   display: grid;
   place-items: center;
@@ -11,22 +13,15 @@
   letter-spacing: -0.02em;
   color: var(--text-2);
 }
-.sa--gold .sa__circle, .sa--silver .sa__circle, .sa--bronze .sa__circle { width: 70%; height: 70%; }
-.sa--gold .sa__circle { border-color: #d9a21b; box-shadow: 0 0 20px rgb(224 170 40 / 0.35); }
-.sa--silver .sa__circle { border-color: #9aa1ad; box-shadow: 0 0 18px rgb(154 161 173 / 0.3); }
-.sa--bronze .sa__circle { border-color: #b36a2e; box-shadow: 0 0 18px rgb(179 106 46 / 0.3); }
-.sa__wreath { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 2px 5px rgb(0 0 0 / 0.25)); }
-.sa__dev {
-  position: absolute;
-  right: -4%;
-  bottom: -4%;
-  display: grid;
-  place-items: center;
-  width: 38%;
-  height: 38%;
-  border-radius: 50%;
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  border: 2px solid var(--surface);
-}
-.sa__dev svg { width: 62%; height: 62%; }
+
+/* top-3 */
+.sa__wreath { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.28)); }
+.sa__disc { fill: var(--bg-sunken); }
+.sa__txt { fill: var(--text-2); font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.02em; }
+.sa__num { font-family: var(--font-sans); }
+.sa__spec { opacity: 0.5; animation: sa-spec 3.6s ease-in-out infinite; }
+@keyframes sa-spec { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+.sa--gold { filter: drop-shadow(0 0 14px rgb(230 183 62 / 0.28)); }
+
+/* developer hexagon */
+.sa__dev { position: absolute; right: -3%; bottom: -1%; width: 37%; height: 37%; }

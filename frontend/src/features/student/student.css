@@ -35,18 +35,7 @@
 .sp-head > * { position: relative; }
 .sp-title { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
 .sp-title h1 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); letter-spacing: -0.045em; }
-.sp-dev {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  font: 600 11px var(--font-mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
+
 .sp-dept { margin-top: var(--space-2); color: var(--text-2); }
 .sp-meta { margin-top: 2px; font-size: var(--text-sm); color: var(--muted); }
 
@@ -77,11 +66,35 @@
 .sp-rank__slash { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 200; color: var(--border-strong); }
 .sp-rank__total { font-size: clamp(1.25rem, 2.4vw, 1.75rem); color: var(--muted); }
 .sp-rank__label { font: 500 11px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.sp-medal { padding: 6px 14px; border: 1px solid; border-radius: var(--radius-full); font: 600 12px var(--font-mono); letter-spacing: 0.04em; color: var(--text); }
-.sp-medal--gold { border-color: #d9a21b; background: rgb(217 162 27 / 0.14); }
-.sp-medal--silver { border-color: #9aa1ad; background: rgb(154 161 173 / 0.16); }
-.sp-medal--bronze { border-color: #b36a2e; background: rgb(179 106 46 / 0.14); }
+.sp-dev {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px 4px 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background-image: linear-gradient(var(--surface-2), var(--surface-2)), linear-gradient(135deg, #f3ffb4, #c8f34d 50%, #86c414);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.sp-dev__role { font-weight: 500; color: var(--muted); }
 
+.sp-medal {
+  padding: 7px 16px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--m-from), var(--m-mid) 55%, var(--m-to));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 6px 18px -6px var(--m-mid);
+  font: 600 12px var(--font-mono);
+  letter-spacing: 0.05em;
+  color: var(--m-ink);
+}
+.sp-medal--gold { --m-from: #fdf0b8; --m-mid: #e6b73e; --m-to: #a8730e; --m-ink: #3a2600; }
+.sp-medal--silver { --m-from: #fafbfd; --m-mid: #c5ccd8; --m-to: #838c9d; --m-ink: #1d2230; }
+.sp-medal--bronze { --m-from: #f9cfa4; --m-mid: #d98d4c; --m-to: #8a4b1c; --m-ink: #2e1706; }
 /* ---------- period strip ---------- */
 .sp-strip { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
 .sp-cell { display: flex; flex-direction: column; gap: 4px; padding: var(--space-6); }

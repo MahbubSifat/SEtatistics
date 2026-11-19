@@ -46,7 +46,10 @@
 
 .dt__row { position: relative; cursor: pointer; transition: background var(--dur-fast) var(--ease); animation: rise 0.45s var(--ease) both; animation-delay: calc(var(--i, 0) * 22ms); }
 .dt__row:hover { background: var(--surface-2); }
-.dt__row.is-first { background: linear-gradient(90deg, var(--accent-soft), transparent 55%); }
+.dt__row.is-top-1 { background: linear-gradient(90deg, rgb(230 183 62 / 0.16), transparent 55%); }
+.dt__row.is-top-2 { background: linear-gradient(90deg, rgb(197 204 216 / 0.2), transparent 55%); }
+.dt__row.is-top-3 { background: linear-gradient(90deg, rgb(217 141 76 / 0.16), transparent 55%); }
+.dt__row.is-top .dt__rank { font-weight: 700; color: var(--text); }
 .dt__row:has(.dt__link:focus-visible) { outline: 2px solid var(--ring); outline-offset: -2px; }
 
 .dt__stand { display: flex; align-items: center; gap: var(--space-3); white-space: nowrap; }
