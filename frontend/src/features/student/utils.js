@@ -47,3 +47,25 @@ export function buildComparison(id, boards) {
     }
   }).filter(Boolean)
 }
+
+// cumulative solved: ৩০ দিন আগে → ৭ দিন আগে → আজ সকাল → এখন
+export function buildSeries(total, periods) {
+  const at = (back) => Math.max(0, total - (periods[back] ?? 0))
+  return [
+    { key: 'm30', label: '30 days ago', value: at('last-month') },
+    { key: 'd7', label: '7 days ago', value: at('last-week') },
+    { key: 'd0', label: 'Today', value: at('last-day') },
+    { key: 'now', label: 'Now', value: total },
+  ]
+}
+
+// leader এর series: প্রতিটা period এর leaderboard থেকে
+export function seriesFromBoards(id, boards) {
+  const get = (p) => boards[p]?.find((r) => r.id === id)?.period_solved ?? 0
+  const total = boards['all-time']?.find((r) => r.id === id)?.total_solved ?? get('all-time')
+  return buildSeries(total, {
+    'last-day': get('last-day'),
+    'last-week': get('last-week'),
+    'last-month': get('last-month'),
+  })
+}

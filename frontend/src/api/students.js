@@ -11,4 +11,5 @@ export const updateStudent = (id, body) => api(`/api/students/${id}`, { method: 
 export const deleteStudent = (id) => api(`/api/students/${id}`, { method: 'DELETE' })
 
 export const getStudentStatistics = (id) => api(`/api/students/${id}/statistics`)
+export const getStudent = (id) => api(`/api/students/${id}`)
 

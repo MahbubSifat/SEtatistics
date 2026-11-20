@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getLeaderboard } from '../api/leaderboard'
 import { getSummary } from '../api/dashboard'
+import { listStudents } from '../api/students'
 import { useSync } from '../context/SyncContext'
 import useCountUp from '../hooks/useCountUp'
+import useCodeforcesRatings from '../hooks/useCodeforcesRatings'
 import Segmented from '../components/ui/Segmented'
 import Pagination from '../components/ui/Pagination'
 import StandingsTable from '../features/dashboard/StandingsTable'
@@ -15,7 +17,6 @@ const MODE_OPTIONS = [
   { value: 'solved', label: 'Solved' },
   { value: 'rank', label: 'Rank' },
 ]
-const PLATFORM_KEYS = ['codeforces', 'leetcode', 'beecrowd', 'codechef']
 
 function Stat({ label, value }) {
   const n = useCountUp(value)
@@ -35,8 +36,8 @@ export default function DashboardPage() {
   const [attempt, setAttempt] = useState(0)
   const [board, setBoard] = useState({ status: 'loading', rows: [], error: '' })
   const [summary, setSummary] = useState(null)
+  const [students, setStudents] = useState(null)
 
-  // Leaderboard: period বদলালে বা sync শেষ হলে আবার আনে
   useEffect(() => {
     let ignore = false
     setBoard((b) => ({ ...b, status: 'loading', error: '' }))
@@ -52,7 +53,6 @@ export default function DashboardPage() {
     }
   }, [period, attempt, version])
 
-  // Summary (মোট ছাত্র, মোট solve, আজকের solve)
   useEffect(() => {
     let ignore = false
     getSummary()
@@ -65,20 +65,21 @@ export default function DashboardPage() {
     }
   }, [attempt, version])
 
-  // Rank mode: প্রতিটা platform এ সবার মধ্যে অবস্থান
-  const ranks = useMemo(() => {
-    const out = {}
-    board.rows.forEach((r) => {
-      out[r.id] = {}
-    })
-    PLATFORM_KEYS.forEach((key) => {
-      const vals = board.rows.map((r) => r.by_platform?.[key] ?? 0)
-      board.rows.forEach((r, i) => {
-        out[r.id][key] = 1 + vals.filter((v) => v > vals[i]).length
+  // Rank mode এ Codeforces username লাগে (students list থেকে, একবারই আনি)
+  useEffect(() => {
+    if (mode !== 'rank' || students !== null) return undefined
+    let ignore = false
+    listStudents()
+      .then((rows) => {
+        if (!ignore) setStudents(rows)
       })
-    })
-    return out
-  }, [board.rows])
+      .catch(() => {
+        if (!ignore) setStudents([])
+      })
+    return () => {
+      ignore = true
+    }
+  }, [mode, students])
 
   const total = board.rows.length
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
@@ -86,12 +87,34 @@ export default function DashboardPage() {
   const pageRows = board.rows.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE)
   const meta = PERIODS.find((p) => p.value === period)
 
+  const handleById = useMemo(
+    () => Object.fromEntries((students ?? []).map((s) => [s.id, s.codeforces_id || ''])),
+    [students],
+  )
+  const handles = mode === 'rank' ? pageRows.map((r) => handleById[r.id]).filter(Boolean) : []
+  const cf = useCodeforcesRatings(handles, mode === 'rank' && students !== null)
+  const ratingsStatus = mode === 'rank' && students === null ? 'loading' : cf.status === 'idle' ? 'ready' : cf.status
+
+  const hasPeriod = board.rows.some((r) => r.period_by_platform)
+  const scopeLabel = period === 'all-time' || !hasPeriod ? 'All time' : meta.column
+
   const lastSynced = sync?.finished_at
   const syncLine = running
     ? 'Sync in progress…'
     : lastSynced
       ? `Last synced ${lastSynced} · Dhaka time`
       : 'Not synced since the server started'
+
+  const ctx = {
+    mode,
+    period,
+    periodColumn: meta.column,
+    scopeLabel,
+    hasPeriod,
+    handleById,
+    ratings: cf.data,
+    ratingsStatus,
+  }
 
   return (
     <main className="dash container container--wide">
@@ -120,14 +143,23 @@ export default function DashboardPage() {
         <Segmented label="Show values as" options={MODE_OPTIONS} value={mode} onChange={setMode} />
       </div>
 
+      {mode === 'rank' && (
+        <p className="dash__note">
+          Contest performance comes from Codeforces (rating and title). LeetCode, CodeChef and Beecrowd ratings need backend support.
+          {cf.status === 'error' && ` Could not load Codeforces data: ${cf.error}.`}
+        </p>
+      )}
+      {mode === 'solved' && period !== 'all-time' && !hasPeriod && (
+        <p className="dash__note">
+          Platform columns show all-time totals. Platform-wise counts for this period need backend support.
+        </p>
+      )}
+
       <StandingsTable
         status={board.status}
         rows={pageRows}
         error={board.error}
-        period={period}
-        periodColumn={meta.column}
-        mode={mode}
-        ranks={ranks}
+        ctx={ctx}
         onRetry={() => setAttempt((n) => n + 1)}
       />
 

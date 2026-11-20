@@ -3,13 +3,14 @@ import Icon from '../ui/Icon'
 import Logo from '../ui/Logo'
 import { DEPARTMENT, DEVELOPERS, SUPERVISOR } from '../../config/team'
 import './Footer.css'
+import { DEPARTMENT, DEVELOPERS, SUPERVISOR, TAGLINE } from '../../config/team'
 
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="container container--wide">
         <div className="footer__top">
-          <Logo size="sm" />
+          <Logo tagline={TAGLINE} />
           <nav className="footer__nav" aria-label="Footer">
             <NavLink to="/" end>Leaderboard</NavLink>
             <NavLink to="/students">Students</NavLink>

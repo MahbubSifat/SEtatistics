@@ -1,0 +1,26 @@
+:root {
+  --cf-unrated: #66666c; --cf-newbie: #66666c; --cf-pupil: #15803d; --cf-specialist: #0e7490;
+  --cf-expert: #1d4ed8; --cf-candidate-master: #7e22ce; --cf-master: #c2410c; --cf-international-master: #c2410c;
+  --cf-grandmaster: #b91c1c; --cf-international-grandmaster: #b91c1c; --cf-legendary-grandmaster: #991b1b;
+}
+:root[data-theme='dark'] {
+  --cf-unrated: #a3a3a8; --cf-newbie: #a3a3a8; --cf-pupil: #4ade80; --cf-specialist: #22d3ee;
+  --cf-expert: #60a5fa; --cf-candidate-master: #c084fc; --cf-master: #fb923c; --cf-international-master: #fb923c;
+  --cf-grandmaster: #f87171; --cf-international-grandmaster: #f87171; --cf-legendary-grandmaster: #fca5a5;
+}
+.cf--unrated { --cf: var(--cf-unrated); }
+.cf--newbie { --cf: var(--cf-newbie); }
+.cf--pupil { --cf: var(--cf-pupil); }
+.cf--specialist { --cf: var(--cf-specialist); }
+.cf--expert { --cf: var(--cf-expert); }
+.cf--candidate-master { --cf: var(--cf-candidate-master); }
+.cf--master { --cf: var(--cf-master); }
+.cf--international-master { --cf: var(--cf-international-master); }
+.cf--grandmaster { --cf: var(--cf-grandmaster); }
+.cf--international-grandmaster { --cf: var(--cf-international-grandmaster); }
+.cf--legendary-grandmaster { --cf: var(--cf-legendary-grandmaster); }
+
+.cfr { display: inline-flex; flex-direction: column; align-items: flex-end; line-height: 1.25; }
+.cfr b { font-size: var(--text-base); font-weight: 600; color: var(--cf, var(--text)); }
+.cfr small { font: 500 11px var(--font-sans); color: var(--cf, var(--muted)); }
+.cfr em { font-style: normal; font-size: 10.5px; color: var(--muted); }

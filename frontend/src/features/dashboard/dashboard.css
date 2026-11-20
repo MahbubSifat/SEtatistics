@@ -109,3 +109,8 @@
   .dt__rank { display: none; }
   .dash__stat dd { font-size: 1.375rem; }
 }
+
+.dt__scope { display: block; margin-top: 2px; font: 500 10px var(--font-mono); letter-spacing: 0.06em; text-transform: none; color: var(--muted); }
+.dt__skel--sm { display: inline-block; width: 3.5rem; height: 12px; }
+.dash__note { margin: 0 0 var(--space-4); padding: var(--space-3) var(--space-4); background: var(--warning-soft); border-radius: var(--radius-md); font-size: var(--text-sm); color: var(--text); }
+

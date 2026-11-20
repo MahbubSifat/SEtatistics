@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getStudentStatistics, listStudents } from '../../api/students'
+import { getStudent, getStudentStatistics } from '../../api/students'
 import { getLeaderboard } from '../../api/leaderboard'
 import { PERIODS } from '../leaderboard/periods'
 
@@ -10,25 +10,37 @@ export default function useStudentProfile(id, version, attempt) {
 
   useEffect(() => {
     let ignore = false
-    // একই ছাত্রের data থাকলে সেটাই দেখাই, নতুনটা এলে বদলায়
-    setState((s) => (s.stats && String(s.stats.student.id) === id ? s : EMPTY))
+    setState((s) => (s.stats && String(s.stats.student.id) === String(id) ? s : EMPTY))
 
-    const periods = PERIODS.map((p) => p.value)
-    Promise.all([getStudentStatistics(id), listStudents(), ...periods.map((p) => getLeaderboard(p))])
-      .then(([stats, students, ...boardResults]) => {
-        if (ignore) return
-        const boards = {}
-        periods.forEach((p, i) => {
-          boards[p] = boardResults[i].rows
-        })
-        const student = students.find((s) => String(s.id) === String(stats.student.id)) ?? null
-        setState({ status: 'ready', stats, student, boards, error: '' })
+    ;(async () => {
+      // শুধু এটাই জরুরি: না পেলে (404) তবেই "not found"
+      let stats
+      try {
+        stats = await getStudentStatistics(id)
+      } catch (err) {
+        if (!ignore) setState({ ...EMPTY, status: err.status === 404 ? 'missing' : 'error', error: err.message })
+        return
+      }
+
+      // বাকিগুলো ঐচ্ছিক: ফেল করলে শুধু ওই অংশ খালি থাকে
+      const periods = PERIODS.map((p) => p.value)
+      const [student, ...boardResults] = await Promise.allSettled([
+        getStudent(id),
+        ...periods.map((p) => getLeaderboard(p)),
+      ])
+      if (ignore) return
+      const boards = {}
+      periods.forEach((p, i) => {
+        boards[p] = boardResults[i].status === 'fulfilled' ? boardResults[i].value.rows : null
       })
-      .catch((err) => {
-        if (!ignore) {
-          setState({ ...EMPTY, status: err.status === 404 ? 'missing' : 'error', error: err.message })
-        }
+      setState({
+        status: 'ready',
+        stats,
+        student: student.status === 'fulfilled' ? student.value : null,
+        boards,
+        error: '',
       })
+    })()
 
     return () => {
       ignore = true
