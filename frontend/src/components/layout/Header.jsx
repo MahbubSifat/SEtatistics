@@ -1,8 +1,9 @@
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useSync } from '../../context/SyncContext'
 import Icon from '../ui/Icon'
 import ThemeToggle from '../ui/ThemeToggle'
+import Logo from '../ui/Logo'
 import SyncButton from '../../features/sync/SyncButton'
 import './Header.css'
 
@@ -24,8 +25,10 @@ export default function Header() {
     <header className="header">
       <div className="container container--wide header__inner">
         <div className="header__brand">
-          <span className="header__mark" aria-hidden="true"><Icon name="code" size={18} /></span>
-          <span className="header__dept">Department of Software Engineering, UFTB</span>
+          <Link to="/" className="header__home" aria-label="SEtatistics, go to leaderboard">
+            <Logo />
+          </Link>
+          <span className="header__dept">Problem-solving statistics of UFTB Software Engineering students</span>
         </div>
 
         <nav className="header__nav" aria-label="Main">

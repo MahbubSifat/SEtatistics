@@ -1,9 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import Icon from '../ui/Icon'
 import Logo from '../ui/Logo'
-import { DEPARTMENT, DEVELOPERS, SUPERVISOR } from '../../config/team'
-import './Footer.css'
 import { DEPARTMENT, DEVELOPERS, SUPERVISOR, TAGLINE } from '../../config/team'
+import './Footer.css'
 
 export default function Footer() {
   return (

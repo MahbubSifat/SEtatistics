@@ -92,3 +92,17 @@
   .header__nav { grid-column: 1 / -1; order: 3; overflow-x: auto; }
   .header__link { flex: 1; justify-content: center; }
 }
+
+.header__home { display: inline-flex; border-radius: var(--radius-md); text-decoration: none; }
+.header__dept {
+  display: none;
+  max-width: 11rem;
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border-strong);
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: normal;
+  color: var(--muted);
+}
+@media (min-width: 1320px) { .header__dept { display: block; } }
+@media (max-width: 480px) { .header__actions { gap: 6px; } }
