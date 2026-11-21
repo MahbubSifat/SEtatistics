@@ -1,5 +1,4 @@
-export const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:5000'
-
+export const BASE = 'https://MahbubSifat.pythonanywhere.com'
 let onUnauthorized = () => {}
 export function setUnauthorizedHandler(fn) {
   onUnauthorized = fn
