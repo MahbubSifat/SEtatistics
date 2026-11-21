@@ -1733,6 +1733,14 @@ def sync_runs():
                             (int_arg("limit", 20, 1, 100),)).fetchall()
     return jsonify([run_to_dict(r) for r in rows])
 
+# health check
+
+@app.route('/api/hello', methods=['GET'])
+def hello_api():
+    return jsonify({
+        "status": "success",
+        "message": "Hello from Flask"
+    })
 
 # ---------------------------- Beecrowd agent (signed, no cookie) ------------
 @app.get("/api/ingest/beecrowd/usernames")
@@ -2046,20 +2054,20 @@ def start_auto_sync():
 
 init_db()  # runs on import too (PythonAnywhere WSGI imports this file)
 
-if __name__ == "__main__":
-    command = sys.argv[1] if len(sys.argv) > 1 else "run"
-    if command == "sync":
-        sys.exit(cli_sync())
-    elif command == "create-user" and len(sys.argv) >= 4:
-        sys.exit(cli_create_user(sys.argv[2], sys.argv[3], *sys.argv[4:6]))
-    elif command == "set-password" and len(sys.argv) >= 3:
-        sys.exit(cli_set_password(sys.argv[2]))
-    elif command == "run":
-        debug = env_bool("FLASK_DEBUG", True)
-        # With debug=True Flask starts the app twice (reloader); start the clock only in the real one.
-        if not debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-            start_auto_sync()
-        app.run(debug=debug, port=int(os.getenv("PORT", "5000")))
-    else:
-        print(__doc__)
-        sys.exit(1)
+# if __name__ == "__main__":
+#     command = sys.argv[1] if len(sys.argv) > 1 else "run"
+#     if command == "sync":
+#         sys.exit(cli_sync())
+#     elif command == "create-user" and len(sys.argv) >= 4:
+#         sys.exit(cli_create_user(sys.argv[2], sys.argv[3], *sys.argv[4:6]))
+#     elif command == "set-password" and len(sys.argv) >= 3:
+#         sys.exit(cli_set_password(sys.argv[2]))
+#     elif command == "run":
+#         debug = env_bool("FLASK_DEBUG", True)
+#         # With debug=True Flask starts the app twice (reloader); start the clock only in the real one.
+#         if not debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+#             start_auto_sync()
+#         app.run(debug=debug, port=int(os.getenv("PORT", "5000")))
+#     else:
+#         print(__doc__)
+#         sys.exit(1)
