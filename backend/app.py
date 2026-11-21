@@ -100,7 +100,7 @@ app.config.update(
 )
 app.json.sort_keys = False
 
-CORS(app, supports_credentials=True, origins=FRONTEND_ORIGINS)
+CORS(app, supports_credentials=True, origins=["https://setatistics.vercel.app", "http://localhost:5173", "http://localhost:3000"])
 
 PLATFORMS = ["codeforces", "leetcode", "codechef", "beecrowd"]
 SYNC_PLATFORMS = ["codeforces", "leetcode", "codechef"]  # beecrowd comes from the local agent
