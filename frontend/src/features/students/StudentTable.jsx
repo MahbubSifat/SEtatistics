@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import Button from '../../components/ui/Button'
 import Icon from '../../components/ui/Icon'
 import StudentAvatar from '../../components/ui/StudentAvatar'
-import { isDeveloper } from '../../config/team'
+import { isDevStudent } from '../../config/team'
 import './students.css'
 
 const ACCOUNTS = [
@@ -76,7 +76,7 @@ export default function StudentTable({ status, rows, error, query, onRetry, onEd
               <tr key={s.id} className="stt__row" style={{ '--i': Math.min(i, 12) }}>
                 <td>
                   <div className="stt__student">
-                    <StudentAvatar name={s.name} developer={isDeveloper(s.student_id)} size={40} />
+                    <StudentAvatar name={s.name} src={s.avatar_url} developer={isDevStudent(s)} size={40} />
                     <div className="stt__who">
                       <Link to={`/students/${s.id}`} className="stt__link">{s.name}</Link>
                       <span className="stt__email">{s.email}</span>

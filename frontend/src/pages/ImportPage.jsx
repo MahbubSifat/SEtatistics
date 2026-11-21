@@ -1,20 +1,26 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { confirmImport, uploadExcel } from '../api/importExcel'
+import { confirmImport, downloadTemplate, uploadExcel } from '../api/importExcel'
 import { useToast } from '../context/ToastContext'
 import Button from '../components/ui/Button'
 import Icon from '../components/ui/Icon'
+import Segmented from '../components/ui/Segmented'
 import FileDropzone from '../features/import/FileDropzone'
 import ImportPreviewTable from '../features/import/ImportPreviewTable'
 import '../features/import/import.css'
 
 const STEPS = ['Upload', 'Preview', 'Done']
-const REQUIRED = ['student_id', 'name', 'batch', 'email']
-const OPTIONAL = ['codeforces_id', 'leetcode_id', 'codechef_id', 'beecrowd_id']
+const MODES = [
+  { value: 'create', label: 'Add new only' },
+  { value: 'upsert', label: 'Add & update existing' },
+]
+const REQUIRED = ['student_id', 'name', 'department', 'batch']
+const OPTIONAL = ['email', 'avatar_url', 'github_url', 'linkedin_url', 'special_role', 'codeforces_id', 'leetcode_id', 'codechef_id', 'beecrowd_id']
 
 export default function ImportPage() {
   const toast = useToast()
   const [phase, setPhase] = useState('upload') // upload | uploading | preview | importing | done
+  const [mode, setMode] = useState('create')
   const [fileName, setFileName] = useState('')
   const [preview, setPreview] = useState(null)
   const [result, setResult] = useState(null)
@@ -31,7 +37,7 @@ export default function ImportPage() {
     setFileName(file.name)
     setPhase('uploading')
     try {
-      setPreview(await uploadExcel(file))
+      setPreview(await uploadExcel(file, mode))
       setPhase('preview')
     } catch (err) {
       setError(err.message)
@@ -46,16 +52,24 @@ export default function ImportPage() {
       const r = await confirmImport(preview.import_id)
       setResult(r)
       setPhase('done')
-      toast(`${r.imported} ${r.imported === 1 ? 'student' : 'students'} imported`)
+      toast(`${r.imported} added, ${r.updated} updated`)
     } catch (err) {
       if (err.status === 404) {
-        setError('This preview has expired (the server may have restarted). Please upload the file again.')
+        setError('This preview has expired. Please upload the file again.')
         setPreview(null)
         setPhase('upload')
       } else {
         setError(err.message)
         setPhase('preview')
       }
+    }
+  }
+
+  async function handleTemplate() {
+    try {
+      await downloadTemplate()
+    } catch (err) {
+      setError(err.message)
     }
   }
 
@@ -99,6 +113,11 @@ export default function ImportPage() {
 
       {(phase === 'upload' || phase === 'uploading') && (
         <>
+          <div className="imp__bar">
+            <Segmented label="Import mode" options={MODES} value={mode} onChange={setMode} />
+            <Button variant="ghost" className="btn--sm" onClick={handleTemplate}>Download template</Button>
+          </div>
+
           <FileDropzone onFile={handleFile} disabled={phase === 'uploading'} />
           {phase === 'uploading' && <p className="imp__busy" role="status">Reading {fileName}…</p>}
 
@@ -112,7 +131,9 @@ export default function ImportPage() {
               <div className="imp__codes">{OPTIONAL.map((c) => <code key={c}>{c}</code>)}</div>
             </div>
             <p className="imp__guide-note">
-              Capital letters and spaces in headings are fixed automatically (Student ID becomes student_id).
+              {mode === 'upsert'
+                ? 'Existing Student IDs are updated (only non-empty cells). New IDs are added.'
+                : 'A Student ID that already exists is reported as a problem and skipped.'}{' '}
               Every Student ID must be unique.
             </p>
           </div>
@@ -123,7 +144,11 @@ export default function ImportPage() {
         <>
           <div className="imp__summary">
             <div><span className="imp__summary-n">{preview.total_rows}</span><span>rows read</span></div>
-            <div><span className="imp__summary-n imp__summary-n--ok">{preview.valid_count}</span><span>ready to import</span></div>
+            <div>
+              <span className="imp__summary-n imp__summary-n--ok">{preview.valid_count}</span>
+              <span>ready to import</span>
+              <span className="imp__summary-sub">{preview.create_count} new · {preview.update_count} updates</span>
+            </div>
             <div><span className={`imp__summary-n${bad ? ' imp__summary-n--bad' : ''}`}>{bad}</span><span>with problems</span></div>
           </div>
 
@@ -133,13 +158,16 @@ export default function ImportPage() {
               upload again if you need {one ? 'it' : 'them'}.
             </p>
           )}
+          {preview.ignored_columns?.length > 0 && (
+            <p className="imp__note">Ignored columns: {preview.ignored_columns.join(', ')}</p>
+          )}
 
           <ImportPreviewTable rows={preview.rows} />
 
           <div className="imp__actions">
             <Button variant="ghost" onClick={reset} disabled={phase === 'importing'}>Cancel</Button>
             <Button onClick={handleConfirm} loading={phase === 'importing'} disabled={preview.valid_count === 0}>
-              Import {preview.valid_count} {preview.valid_count === 1 ? 'student' : 'students'}
+              Import {preview.valid_count} {preview.valid_count === 1 ? 'row' : 'rows'}
             </Button>
           </div>
         </>
@@ -149,8 +177,11 @@ export default function ImportPage() {
         <div className="imp__done">
           <span className="imp__done-icon" aria-hidden="true"><Icon name="check" size={28} /></span>
           <span className="imp__done-n">{result.imported}</span>
-          <p className="imp__done-label">{result.imported === 1 ? 'student imported' : 'students imported'}</p>
-          {result.skipped > 0 && <p className="imp__done-skipped">{result.skipped} skipped</p>}
+          <p className="imp__done-label">{result.imported === 1 ? 'student added' : 'students added'}</p>
+          <p className="imp__done-extra">
+            <span>{result.updated} updated</span>
+            {result.skipped > 0 && <span>{result.skipped} skipped</span>}
+          </p>
           <p className="imp__done-hint">Add their platform usernames if missing, then run Sync from the top bar.</p>
           <div className="imp__actions imp__actions--center">
             <Button variant="ghost" onClick={reset}>Import another file</Button>

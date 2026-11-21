@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, useState } from 'react'
 import DevBadge from './DevBadge'
 import './StudentAvatar.css'
 
@@ -12,7 +12,6 @@ const f = (n) => n.toFixed(2)
 const STEPS = 10
 const point = (deg, r) => [50 + r * Math.cos((deg * Math.PI) / 180), 50 + r * Math.sin((deg * Math.PI) / 180)]
 
-// বাম দিকের পাতা: ভেতর ও বাইরে দুই সারি, ডান দিক আয়নার মতো উল্টে বসে
 const LEAVES = []
 for (let i = 0; i < STEPS; i += 1) {
   const deg = 98 + i * 15.5
@@ -36,10 +35,12 @@ function Leaves() {
   ))
 }
 
-// rank 1..3: wreath + পদক; developer: কোণে hexagon badge; label: দিলে screen reader পড়ে
-export default function StudentAvatar({ name, rank, developer = false, size = 40, label }) {
+// rank 1..3: wreath + পদক | developer: কোণে hexagon | src: ছবি (ভাঙলে আদ্যক্ষর)
+export default function StudentAvatar({ name, rank, developer = false, size = 40, label, src }) {
   const gid = `m-${useId().replace(/:/g, '')}`
+  const [broken, setBroken] = useState(null)
   const medal = MEDALS[rank]
+  const showPhoto = Boolean(src) && broken !== src
   const a11y = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true }
 
   return (
@@ -86,6 +87,17 @@ export default function StudentAvatar({ name, rank, developer = false, size = 40
         </svg>
       ) : (
         <span className="sa__circle">{initials(name)}</span>
+      )}
+
+      {showPhoto && (
+        <img
+          className={`sa__photo${medal ? ' is-medal' : ''}`}
+          src={src}
+          alt=""
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={() => setBroken(src)}
+        />
       )}
 
       {developer && (

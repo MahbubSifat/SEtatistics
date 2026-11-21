@@ -8,16 +8,22 @@ import './students.css'
 const CORE = [
   { name: 'student_id', label: 'Student ID', required: true },
   { name: 'name', label: 'Full name', required: true },
+  { name: 'department', label: 'Department', required: true, placeholder: 'e.g. SWE' },
   { name: 'batch', label: 'Batch', required: true },
-  { name: 'email', label: 'Email', type: 'email', required: true },
+  { name: 'email', label: 'Email (optional)', type: 'email' },
+]
+const PROFILE = [
+  { name: 'avatar_url', label: 'Photo link', placeholder: 'https://…' },
+  { name: 'github_url', label: 'GitHub link', placeholder: 'https://github.com/…' },
+  { name: 'linkedin_url', label: 'LinkedIn link', placeholder: 'https://www.linkedin.com/in/…' },
 ]
 const PLATFORMS = [
   { name: 'codeforces_id', label: 'Codeforces' },
   { name: 'leetcode_id', label: 'LeetCode' },
   { name: 'codechef_id', label: 'CodeChef' },
-  { name: 'beecrowd_id', label: 'beecrowd' },
+  { name: 'beecrowd_id', label: 'beecrowd (user ID)' },
 ]
-const ALL = [...CORE, ...PLATFORMS]
+const ALL = [...CORE, ...PROFILE, { name: 'special_role' }, ...PLATFORMS]
 
 const toValues = (student) => Object.fromEntries(ALL.map((f) => [f.name, student?.[f.name] ?? '']))
 
@@ -29,9 +35,8 @@ function StudentForm({ student, onClose, onSaved }) {
 
   const set = (name) => (e) => setValues((v) => ({ ...v, [name]: e.target.value }))
 
-  // edit এ কোন field বদলেছে
   const changed = isEdit ? ALL.filter((f) => values[f.name].trim() !== (student[f.name] ?? '')) : []
-  // আগে ID ছিল, এখন বদলানো বা মোছা: পুরোনো solved data মুছে যাবে
+  // আগে username ছিল, এখন বদলানো বা মোছা: পুরোনো solved ইতিহাস মুছে যাবে
   const risky = PLATFORMS.filter((f) => changed.includes(f) && (student[f.name] ?? '') !== '')
 
   async function handleSubmit(e) {
@@ -49,7 +54,9 @@ function StudentForm({ student, onClose, onSaved }) {
         }
         saved = await updateStudent(student.id, diff)
       } else {
-        const body = Object.fromEntries(ALL.filter((f) => f.required || trimmed[f.name] !== '').map((f) => [f.name, trimmed[f.name]]))
+        const body = Object.fromEntries(
+          ALL.filter((f) => f.required || trimmed[f.name] !== '').map((f) => [f.name, trimmed[f.name]]),
+        )
         saved = await createStudent(body)
       }
       onSaved(saved, isEdit)
@@ -66,8 +73,23 @@ function StudentForm({ student, onClose, onSaved }) {
 
       {CORE.map((f) => (
         <Input key={f.name} id={`f-${f.name}`} label={f.label} type={f.type} required={f.required}
-               value={values[f.name]} onChange={set(f.name)} />
+               placeholder={f.placeholder} value={values[f.name]} onChange={set(f.name)} />
       ))}
+
+      <p className="st-form__full st-form__section">Profile (optional)</p>
+      {PROFILE.map((f) => (
+        <Input key={f.name} id={`f-${f.name}`} label={f.label} placeholder={f.placeholder}
+               value={values[f.name]} onChange={set(f.name)} autoComplete="off" />
+      ))}
+      <div className="field">
+        <label htmlFor="f-special_role">Badge</label>
+        <div className="field__control">
+          <select id="f-special_role" value={values.special_role} onChange={set('special_role')}>
+            <option value="">None</option>
+            <option value="developer">Developer</option>
+          </select>
+        </div>
+      </div>
 
       <p className="st-form__full st-form__section">Platform usernames (optional)</p>
       {PLATFORMS.map((f) => (
@@ -77,7 +99,7 @@ function StudentForm({ student, onClose, onSaved }) {
 
       {risky.length > 0 && (
         <p className="st-form__full st-warn" role="status">
-          Changing or removing {risky.map((f) => f.label).join(', ')} deletes the solved data already
+          Changing or removing {risky.map((f) => f.label).join(', ')} deletes the solved history already
           collected for that account. Run Sync again after saving.
         </p>
       )}

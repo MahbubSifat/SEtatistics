@@ -204,3 +204,14 @@
 @media (max-width: 900px) { .pt__hide-sm { display: none; } }
 @media (max-width: 640px) { .pc-wrap { padding-inline: var(--space-2); } }
 
+.pc-tabs { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3); padding: var(--space-4) var(--space-6) 0; }
+.pc__hover { stroke: var(--text); stroke-opacity: 0.25; stroke-dasharray: 3 4; }
+.pc__tip rect { fill: var(--surface); stroke: var(--border-strong); }
+.pc__tip text { font: 500 12px var(--font-mono); fill: var(--text); }
+.pc__tip .pc__tip-d { fill: var(--muted); font-size: 11px; }
+.pc__ld { fill: var(--surface); stroke: var(--text); stroke-opacity: 0.5; stroke-width: 1.6; }
+.pt__link { color: var(--text); text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+.pt__link:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.pt__err { margin-left: var(--space-2); padding: 1px 8px; border-radius: var(--radius-full); background: var(--danger-soft); color: var(--danger); font: 500 10px var(--font-sans); }
+@media (max-width: 640px) { .pc-tabs { padding-inline: var(--space-4); } }
+

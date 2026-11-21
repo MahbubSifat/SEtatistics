@@ -25,3 +25,5 @@
 
 /* developer hexagon */
 .sa__dev { position: absolute; right: -3%; bottom: -1%; width: 37%; height: 37%; }
+.sa__photo { position: absolute; top: 50%; left: 50%; width: 80%; height: 80%; transform: translate(-50%, -50%); border-radius: 50%; object-fit: cover; border: 1px solid var(--border-strong); }
+.sa__photo.is-medal { width: 70%; height: 70%; border: 0; }

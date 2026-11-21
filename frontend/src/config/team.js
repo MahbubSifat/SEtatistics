@@ -13,3 +13,4 @@ export const DEVELOPERS = [
 export const developerOf = (studentId) => DEVELOPERS.find((d) => d.studentId === String(studentId)) ?? null
 export const isDeveloper = (studentId) => developerOf(studentId) !== null
 export const TAGLINE = 'Problem-solving statistics of UFTB Software Engineering students'
+export const isDevStudent = (s) => s?.special_role === 'developer' || isDeveloper(s?.student_id)

@@ -2,84 +2,47 @@ import { Link } from 'react-router-dom'
 import Button from '../../components/ui/Button'
 import Icon from '../../components/ui/Icon'
 import StudentAvatar from '../../components/ui/StudentAvatar'
-import { isDeveloper } from '../../config/team'
-import { cfClass, cfTitle } from './cf'
+import RatingCell from '../shared/RatingCell'
+import { PLATFORMS } from '../shared/platforms'
+import { isDevStudent } from '../../config/team'
 import './dashboard.css'
 import './cf.css'
 
-const PLATFORMS = [
-  { key: 'codeforces', name: 'CodeForces', short: 'CF' },
-  { key: 'leetcode', name: 'LeetCode', short: 'LC' },
-  { key: 'beecrowd', name: 'Beecrowd', short: 'BC', unsynced: true },
-  { key: 'codechef', name: 'CodeChef', short: 'CC' },
-]
-
-// Growth = এই period এ যত solve ÷ তার আগে যত ছিল
-function growthOf(row, period) {
-  if (period === 'all-time' || row.period_solved <= 0) return null
-  const base = row.total_solved - row.period_solved
-  if (base <= 0) return 'new'
-  const pct = (row.period_solved / base) * 100
-  return pct >= 10 ? String(Math.round(pct)) : pct.toFixed(1)
-}
-
+// Growth: backend আগের সমান সময়ের সাথে তুলনা করে দেয় (row.growth[period])
 function Growth({ row, period }) {
-  const g = growthOf(row, period)
-  if (g === null) return <span className="dt__dash">—</span>
-  if (g === 'new') return <span className="growth growth--new">New</span>
+  const g = row.growth?.[period]
+  if (!g) return <span className="dt__dash">—</span>
+  if (g.percent === null || g.percent === undefined) {
+    return g.change > 0 ? <span className="growth growth--new">New</span> : <span className="dt__dash">—</span>
+  }
+  if (g.percent === 0) return <span className="growth growth--flat">0%</span>
+  const up = g.percent > 0
   return (
-    <span className="growth">
-      <Icon name="trend-up" size={14} />
-      {g}%
-    </span>
-  )
-}
-
-// Solve mode: backend period-wise দিলে সেটা, নাহলে সব-সময়ের মোট
-const solvedOf = (row, p, ctx) =>
-  (ctx.period !== 'all-time' && ctx.hasPeriod ? row.period_by_platform?.[p.key] : row.by_platform?.[p.key]) ?? 0
-
-function CfRating({ row, ctx }) {
-  const handle = ctx.handleById?.[row.id]
-  if (ctx.ratingsStatus === 'loading') return <span className="dt__skel dt__skel--sm" />
-  if (!handle) return <span className="dt__dash">No account</span>
-  if (ctx.ratingsStatus === 'error') return <span className="dt__dash">—</span>
-  const info = ctx.ratings?.[handle.toLowerCase()]
-  if (!info) return <span className="dt__dash" title="Handle not found on Codeforces">Not found</span>
-  if (info.rating == null) return <span className="dt__dash">Unrated</span>
-  return (
-    <span className={`cfr ${cfClass(info.rank)}`}>
-      <b className="num">{info.rating}</b>
-      <small>{cfTitle(info.rank)}</small>
-      {info.maxRating ? <em className="num">max {info.maxRating}</em> : null}
+    <span className={`growth${up ? '' : ' growth--down'}`}>
+      <Icon name={up ? 'trend-up' : 'trend-down'} size={14} />
+      {Math.abs(g.percent)}%
     </span>
   )
 }
 
 function PlatformCell({ row, p, ctx }) {
-  if (p.unsynced) return <span className="dt__dash" title="Beecrowd is not synced yet">—</span>
-  if (ctx.mode === 'rank') {
-    if (p.key === 'codeforces') return <CfRating row={row} ctx={ctx} />
-    return <span className="dt__dash" title="Contest rating needs backend support">—</span>
-  }
-  const periodScope = ctx.period !== 'all-time' && ctx.hasPeriod
-  const top = !periodScope && row.top_in?.includes(p.key)
+  const d = row.platforms?.[p.key]
+  if (ctx.mode === 'rank') return <RatingCell platformKey={p.key} data={d} />
+  if (!d?.username) return <span className="dt__dash" title="No account linked">—</span>
+  const top = row.top_in?.includes(p.key)
   return (
     <span className={`dt__val${top ? ' is-top' : ''}`} title={top ? `Top solver on ${p.name}` : undefined}>
-      {solvedOf(row, p, ctx)}
+      {d.solved?.[ctx.period] ?? 0}
     </span>
   )
 }
 
 function chipLine(row, ctx) {
   return PLATFORMS.map((p) => {
-    if (p.unsynced) return `${p.short} —`
-    if (ctx.mode === 'rank') {
-      if (p.key !== 'codeforces') return `${p.short} —`
-      const h = ctx.handleById?.[row.id]
-      return `${p.short} ${(h && ctx.ratings?.[h.toLowerCase()]?.rating) ?? '—'}`
-    }
-    return `${p.short} ${solvedOf(row, p, ctx)}`
+    const d = row.platforms?.[p.key]
+    if (!d?.username) return `${p.short} —`
+    if (ctx.mode === 'rank') return `${p.short} ${d.rating != null ? Math.round(d.rating) : '—'}`
+    return `${p.short} ${d.solved?.[ctx.period] ?? 0}`
   }).join(' · ')
 }
 
@@ -92,7 +55,7 @@ function Head({ ctx }) {
         {PLATFORMS.map((p) => (
           <th key={p.key} scope="col" className="dt__col-plat num-h">
             {p.name}
-            <small className="dt__scope">{ctx.mode === 'rank' ? 'Contest' : ctx.scopeLabel}</small>
+            <small className="dt__scope">{ctx.mode === 'rank' ? 'Contest' : ctx.periodColumn}</small>
           </th>
         ))}
         {ctx.mode === 'solved' && (
@@ -158,10 +121,16 @@ export default function StandingsTable({ status, rows, error, ctx, onRetry }) {
         <Head ctx={ctx} />
         <tbody>
           {rows.map((r, i) => (
-            <tr key={r.id} className={`dt__row${r.rank <= 3 ? ` is-top is-top-${r.rank}` : ''}`} style={{ '--i': i }}>
+            <tr key={r.id} className={`dt__row${r.medal ? ` is-top is-top-${r.rank}` : ''}`} style={{ '--i': i }}>
               <td className="dt__stand">
                 <span className="dt__rank num">{String(r.rank).padStart(2, '0')}</span>
-                <StudentAvatar name={r.name} rank={r.rank} developer={isDeveloper(r.student_id)} size={46} />
+                <StudentAvatar
+                  name={r.name}
+                  src={r.avatar_url}
+                  rank={r.medal ? r.rank : null}
+                  developer={isDevStudent(r)}
+                  size={46}
+                />
               </td>
               <td className="dt__name">
                 <Link to={`/students/${r.id}`} className="dt__link">{r.name}</Link>
@@ -175,7 +144,7 @@ export default function StandingsTable({ status, rows, error, ctx, onRetry }) {
               ))}
               {ctx.mode === 'solved' && (
                 <>
-                  <td className="dt__period num">{r.period_solved}</td>
+                  <td className="dt__period num">{r.solved?.[ctx.period] ?? 0}</td>
                   <td className="dt__col-growth dt__growth"><Growth row={r} period={ctx.period} /></td>
                 </>
               )}

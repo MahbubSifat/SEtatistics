@@ -78,3 +78,9 @@
   .imp__step + .imp__step::before { width: 1rem; }
   .dz { padding: var(--space-12) var(--space-4); }
 }
+
+.ip-act { padding: 2px 8px; border-radius: var(--radius-full); background: var(--bg-sunken); font: 600 11px var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); }
+.ip-act--update { background: var(--accent-soft); color: var(--accent); }
+.imp__bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
+.imp__summary-sub { display: block; margin-top: 2px; font: 500 11px var(--font-mono); letter-spacing: 0.04em; text-transform: none; color: var(--muted); }
+.imp__done-extra { display: flex; gap: var(--space-4); margin: 0; font-size: var(--text-sm); color: var(--text-2); }

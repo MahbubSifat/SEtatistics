@@ -10,10 +10,11 @@ export default function ImportPreviewTable({ rows }) {
         <thead>
           <tr>
             <th scope="col">Row</th>
+            <th scope="col">Action</th>
             <th scope="col">Student ID</th>
             <th scope="col">Name</th>
+            <th scope="col">Dept</th>
             <th scope="col">Batch</th>
-            <th scope="col">Email</th>
             <th scope="col">Platforms</th>
             <th scope="col">Status</th>
           </tr>
@@ -26,10 +27,11 @@ export default function ImportPreviewTable({ rows }) {
             return (
               <tr key={r.row} className={bad ? 'is-bad' : ''}>
                 <td className="num">{r.row}</td>
+                <td><span className={`ip-act ip-act--${r.action}`}>{r.action === 'update' ? 'Update' : 'New'}</span></td>
                 <td className="num">{d.student_id || '—'}</td>
                 <td>{d.name || '—'}</td>
+                <td>{d.department || '—'}</td>
                 <td className="num">{d.batch || '—'}</td>
-                <td>{d.email || '—'}</td>
                 <td className="num">{accounts.map((k) => `${SHORT[k]} ${d[k]}`).join(' · ') || '—'}</td>
                 <td>
                   {bad ? (
